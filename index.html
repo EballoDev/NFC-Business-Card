@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Christopher Eballe — Portfolio</title>
-<meta name="description" content="Christopher Eballe — Portfolio, social links and contact." />
+<title>Christopher Eballo — Portfolio</title>
+<meta name="description" content="Christopher Eballo — Portfolio, social links and contact." />
 <meta name="theme-color" content="#0a0a0c" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,13 +17,9 @@
    ============================================================ */
 :root{
   --bg:            #0a0a0c;
-  --bg-2:          #111114;
   --text:          #f5f6f8;
   --muted:         #9aa1ad;
   --muted-soft:    #6b727e;
-  --sd:            #000000;
-  --sl:            #262a31;
-  --gloss:         rgba(255,255,255,.07);
   --gloss-strong:  rgba(255,255,255,.16);
   --accent:        #4ade80;
 
@@ -31,10 +27,10 @@
   --card-border:   rgba(255,255,255,.08);
   --card-border-h: rgba(255,255,255,.22);
 
-  --radius-lg:     26px;
   --radius-md:     22px;
   --ease:          cubic-bezier(.2,.8,.2,1);
   --ease-back:     cubic-bezier(.34,1.56,.64,1);
+  --ease-soft:     cubic-bezier(.4,0,.2,1);
 }
 
 /* ============================================================
@@ -45,7 +41,7 @@
 html, body{
   height:100%;
   width:100%;
-  overflow:hidden;            /* no scrolling — full screen fit */
+  overflow:hidden;
 }
 
 body{
@@ -61,15 +57,22 @@ body{
   -webkit-tap-highlight-color:transparent;
   position:relative;
   isolation:isolate;
+  cursor:default;
 }
 
 /* ============================================================
-   3. ANIMATED BACKGROUND (Satin Luxury + Ken Burns + Sheen)
+   3. ANIMATED BACKGROUND
    ============================================================ */
 .bg-layer{
   position:fixed;
   inset:-8%;
   z-index:-3;
+  transition: transform .8s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+.bg-kb{
+  position:absolute;
+  inset:0;
   background-image:url("https://static.vecteezy.com/system/resources/thumbnails/025/480/053/small/abstarct-black-luxury-satin-background-ai-generated-free-photo.jpg");
   background-size:cover;
   background-position:center;
@@ -78,14 +81,12 @@ body{
   animation: bgMotion 26s ease-in-out infinite alternate;
   will-change: transform, filter;
 }
-
 @keyframes bgMotion{
   0%   { transform: scale(1.08) translate3d(0, 0, 0); }
   50%  { transform: scale(1.16) translate3d(-1.8%, -1.2%, 0); }
   100% { transform: scale(1.10) translate3d(1.6%, 1.0%, 0); }
 }
 
-/* Dark vignette + gradient overlay for readability */
 .bg-overlay{
   position:fixed;
   inset:0;
@@ -96,7 +97,6 @@ body{
   pointer-events:none;
 }
 
-/* Moving satin sheen — simulates light sweeping across fabric */
 .bg-sheen{
   position:fixed;
   inset:-50%;
@@ -119,7 +119,57 @@ body{
 }
 
 /* ============================================================
-   4. NEOMORPHIC / GLASS UTILITIES
+   4. CURSOR GLOW  (interactive light that follows the pointer)
+   ============================================================ */
+.cursor-glow{
+  position:fixed;
+  top:0; left:0;
+  width: 520px;
+  height: 520px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(180,200,255,.10) 0%, rgba(140,160,220,.05) 35%, transparent 70%);
+  pointer-events:none;
+  z-index:1;
+  transform: translate(-50%, -50%) scale(.4);
+  opacity:0;
+  transition: opacity .5s ease, transform .35s var(--ease-soft);
+  mix-blend-mode: screen;
+  filter: blur(4px);
+  will-change: transform, opacity;
+}
+.cursor-glow.is-active{
+  opacity:1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Small dot cursor companion */
+.cursor-dot{
+  position:fixed;
+  top:0; left:0;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#ffffff;
+  box-shadow: 0 0 14px rgba(255,255,255,.85);
+  pointer-events:none;
+  z-index:100;
+  transform: translate(-50%, -50%);
+  opacity:0;
+  transition: opacity .4s ease, width .25s ease, height .25s ease, background .25s ease;
+  mix-blend-mode: difference;
+}
+.cursor-dot.is-active{ opacity:.9; }
+.cursor-dot.is-hot{
+  width:0; height:0;
+  opacity:0;
+}
+
+@media (pointer: coarse){
+  .cursor-glow, .cursor-dot{ display:none; }
+}
+
+/* ============================================================
+   5. NEOMORPHIC UTILITIES
    ============================================================ */
 .neu-inset{
   background: rgba(255,255,255,.04);
@@ -129,7 +179,7 @@ body{
 }
 
 /* ============================================================
-   5. WELCOME / PRELOADER
+   6. WELCOME / PRELOADER
    ============================================================ */
 .preloader{
   position:fixed;
@@ -167,7 +217,6 @@ body{
   transform: scale(.94);
 }
 
-/* --- Spinning ring + monogram --- */
 .loader-ring{
   width:clamp(72px, 11vmin, 96px);
   height:clamp(72px, 11vmin, 96px);
@@ -201,7 +250,6 @@ body{
   color:transparent;
 }
 
-/* --- Welcome text --- */
 .welcome-label{
   font-size: clamp(.6rem, 1.3vmin, .72rem);
   letter-spacing:.55em;
@@ -225,7 +273,6 @@ body{
   animation: letterIn .8s var(--ease) forwards;
 }
 
-/* --- Progress bar --- */
 .progress{
   width:min(240px, 58vw);
   height:7px;
@@ -248,7 +295,7 @@ body{
 }
 
 /* ============================================================
-   6. HERO — FULL SCREEN FLEX LAYOUT
+   7. HERO — FULL SCREEN FLEX LAYOUT
    ============================================================ */
 .hero{
   width:100%;
@@ -261,9 +308,11 @@ body{
   justify-content:center;
   text-align:center;
   gap: clamp(10px, 1.8vmin, 22px);
+  position:relative;
+  z-index:2;
 }
 
-/* --- Availability badge --- */
+/* --- Availability badge (magnetic) --- */
 .badge{
   display:inline-flex;
   align-items:center;
@@ -279,6 +328,17 @@ body{
   -webkit-backdrop-filter: blur(6px);
   border:1px solid rgba(255,255,255,.07);
   flex:0 0 auto;
+  translate: var(--mag-x, 0px) var(--mag-y, 0px);
+  transition: translate .35s cubic-bezier(.2,.8,.2,1), border-color .35s ease, box-shadow .35s ease;
+  will-change: translate;
+}
+.badge:hover{
+  border-color: rgba(74,222,128,.35);
+  box-shadow:
+    0 0 0 1px rgba(74,222,128,.15),
+    0 8px 28px rgba(74,222,128,.12),
+    inset 3px 3px 8px rgba(0,0,0,.7),
+    inset -3px -3px 8px rgba(255,255,255,.05);
 }
 .badge .dot{
   width:7px; height:7px;
@@ -286,6 +346,7 @@ body{
   background: var(--accent);
   box-shadow: 0 0 0 4px rgba(74,222,128,.18);
   animation: pulse 2s ease-in-out infinite;
+  position:relative;
 }
 
 /* --- Name & tagline --- */
@@ -296,6 +357,12 @@ body{
   line-height:1.02;
   text-shadow: 0 6px 28px rgba(0,0,0,.6);
   flex:0 0 auto;
+  transition: letter-spacing .5s var(--ease-soft), text-shadow .5s ease;
+  will-change: transform;
+}
+.name:hover{
+  letter-spacing:-.018em;
+  text-shadow: 0 8px 34px rgba(0,0,0,.75), 0 0 40px rgba(180,200,255,.15);
 }
 .name em{
   font-style:normal;
@@ -303,6 +370,11 @@ body{
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
+  display:inline-block;
+  transition: filter .5s ease;
+}
+.name:hover em{
+  filter: drop-shadow(0 0 26px rgba(255,255,255,.25));
 }
 
 .tagline{
@@ -317,7 +389,7 @@ body{
 .tagline strong{ color:#ffffff; font-weight:600; }
 
 /* ============================================================
-   7. LINK CARDS (GLOSSY + NEOMORPHIC)
+   8. LINK CARDS  (INTERACTIVE / TILT / SPOTLIGHT)
    ============================================================ */
 .links{
   display:grid;
@@ -326,6 +398,7 @@ body{
   width:100%;
   margin-top: clamp(6px, 1.4vmin, 16px);
   flex:0 0 auto;
+  perspective: 1200px;
 }
 
 .card{
@@ -347,11 +420,26 @@ body{
     inset 0 1px 0 rgba(255,255,255,.08);
   overflow:hidden;
   isolation:isolate;
-  transform: translateY(0) scale(1);
+  cursor:pointer;
+  transform-style: preserve-3d;
+  transform:
+    perspective(1000px)
+    translateY(var(--ty, 0px))
+    scale(var(--sc, 1))
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
   transition:
-    transform .45s var(--ease-back),
+    transform .55s var(--ease-back),
     border-color .4s ease,
-    box-shadow .45s var(--ease),
+    box-shadow .5s var(--ease),
+    background .4s ease;
+  will-change: transform;
+}
+.card.is-tracking{
+  transition:
+    transform .12s ease-out,
+    border-color .4s ease,
+    box-shadow .5s var(--ease),
     background .4s ease;
 }
 
@@ -381,7 +469,24 @@ body{
   z-index:0;
 }
 
-/* Shine sweep across the card on hover */
+/* Cursor spotlight following pointer inside the card */
+.card .spotlight{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255,255,255,.14),
+    rgba(255,255,255,.04) 30%,
+    transparent 60%
+  );
+  opacity:0;
+  transition: opacity .35s ease;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* Shine sweep */
 .card .shine{
   position:absolute;
   top:-20%;
@@ -392,23 +497,43 @@ body{
   transform: skewX(-22deg);
   transition: left .85s cubic-bezier(.3,.7,.2,1);
   pointer-events:none;
-  z-index:2;
+  z-index:3;
 }
 
-.card:hover{
-  transform: translateY(-7px) scale(1.025);
+/* Click ripple */
+.card .ripple{
+  position:absolute;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,.45), rgba(255,255,255,.05) 70%);
+  transform: scale(0);
+  animation: rippleOut .75s cubic-bezier(.2,.8,.2,1) forwards;
+  pointer-events:none;
+  z-index:6;
+}
+
+.card:hover,
+.card.is-hover{
+  --ty: -8px;
+  --sc: 1.025;
   border-color: var(--card-border-h);
   background: rgba(26,26,32,.68);
   box-shadow:
-    0 22px 46px rgba(0,0,0,.65),
-    0 4px 12px rgba(0,0,0,.5),
+    0 26px 52px rgba(0,0,0,.68),
+    0 6px 16px rgba(0,0,0,.5),
     inset 0 1px 0 rgba(255,255,255,.16);
 }
-.card:hover::after{ opacity:.55; }
-.card:hover .shine{ left:140%; }
+.card:hover::before,
+.card.is-hover::before{ opacity:1; }
+.card:hover::after,
+.card.is-hover::after{ opacity:.55; }
+.card:hover .shine,
+.card.is-hover .shine{ left:140%; }
+.card:hover .spotlight,
+.card.is-hover .spotlight{ opacity:1; }
 
 .card:active{
-  transform: translateY(-2px) scale(.985);
+  --ty: -2px;
+  --sc: .985;
   transition: transform .12s ease;
   box-shadow:
     0 6px 16px rgba(0,0,0,.6),
@@ -424,19 +549,25 @@ body{
   display:grid;
   place-items:center;
   position:relative;
-  z-index:3;
+  z-index:4;
   background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.14),
     0 4px 12px rgba(0,0,0,.35);
-  transition: transform .5s var(--ease-back), box-shadow .4s ease;
+  transition: transform .5s var(--ease-back), box-shadow .4s ease, border-color .4s ease;
+  transform: translateZ(20px);
 }
-.card:hover .card-icon{
-  transform: scale(1.1) rotate(-6deg);
+.card:hover .card-icon,
+.card.is-hover .card-icon{
+  transform: translateZ(30px) scale(1.1) rotate(-6deg);
+  border-color: rgba(255,255,255,.22);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.22),
-    0 8px 20px rgba(0,0,0,.5);
+    0 10px 24px rgba(0,0,0,.55);
+}
+.card.is-clicking .card-icon{
+  animation: iconPop .6s var(--ease-back);
 }
 .card-icon svg{
   width: clamp(17px, 2.3vmin, 23px);
@@ -454,14 +585,18 @@ body{
   min-width:0;
   text-align:left;
   position:relative;
-  z-index:3;
+  z-index:4;
+  transform: translateZ(14px);
 }
 .card-text h3{
   font-size: clamp(.78rem, 1.7vmin, .98rem);
   font-weight:700;
   letter-spacing:-.01em;
   margin-bottom:2px;
+  transition: letter-spacing .45s var(--ease-soft);
 }
+.card:hover .card-text h3,
+.card.is-hover .card-text h3{ letter-spacing:0; }
 .card-text p{
   font-size: clamp(.62rem, 1.25vmin, .76rem);
   font-weight:400;
@@ -471,7 +606,8 @@ body{
   text-overflow:ellipsis;
   transition: color .35s ease;
 }
-.card:hover .card-text p{ color:#c9ced8; }
+.card:hover .card-text p,
+.card.is-hover .card-text p{ color:#c9ced8; }
 
 /* --- Arrow --- */
 .card-arrow{
@@ -480,10 +616,10 @@ body{
   height: clamp(16px, 2vmin, 20px);
   color:#cfd4dc;
   opacity:0;
-  transform: translateX(-8px);
+  transform: translateX(-8px) translateZ(24px);
   transition: opacity .35s ease, transform .45s var(--ease-back);
   position:relative;
-  z-index:3;
+  z-index:4;
 }
 .card-arrow svg{
   width:100%; height:100%;
@@ -493,9 +629,10 @@ body{
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-.card:hover .card-arrow{
+.card:hover .card-arrow,
+.card.is-hover .card-arrow{
   opacity:1;
-  transform: translateX(0);
+  transform: translateX(0) translateZ(24px);
 }
 
 /* --- Brand colors --- */
@@ -510,7 +647,7 @@ body{
 .card.contact   .card-icon { color:#4ade80; }
 
 /* ============================================================
-   8. FOOTER
+   9. FOOTER
    ============================================================ */
 .footer{
   font-size: clamp(.55rem, 1.05vmin, .7rem);
@@ -519,11 +656,16 @@ body{
   color: var(--muted-soft);
   flex:0 0 auto;
   padding-top: clamp(2px, 1vmin, 10px);
+  transition: color .4s ease, letter-spacing .5s var(--ease-soft);
+}
+.footer:hover{
+  color: var(--muted);
+  letter-spacing:.18em;
 }
 .footer b{ color:#e9ebef; font-weight:600; }
 
 /* ============================================================
-   9. REVEAL ANIMATION (staggered after preloader)
+   10. REVEAL ANIMATION
    ============================================================ */
 .reveal{
   opacity:0;
@@ -536,7 +678,7 @@ body.loaded .reveal{
 }
 
 /* ============================================================
-   10. KEYFRAMES
+   11. KEYFRAMES
    ============================================================ */
 @keyframes spin{ to{ transform: rotate(360deg); } }
 
@@ -562,16 +704,25 @@ body.loaded .reveal{
   50%    { opacity:.45; transform: scale(.86); }
 }
 
-/* ============================================================
-   11. RESPONSIVE — FULL SCREEN FIT ON ANY DEVICE
-   ============================================================ */
+@keyframes rippleOut{
+  0%   { transform: scale(0);   opacity:1; }
+  100% { transform: scale(2.4); opacity:0; }
+}
 
-/* Tablets & small laptops */
+@keyframes iconPop{
+  0%   { transform: translateZ(30px) scale(1.1) rotate(-6deg); }
+  35%  { transform: translateZ(40px) scale(1.35) rotate(-14deg); }
+  70%  { transform: translateZ(32px) scale(1.05) rotate(-4deg); }
+  100% { transform: translateZ(30px) scale(1.1) rotate(-6deg); }
+}
+
+/* ============================================================
+   12. RESPONSIVE
+   ============================================================ */
 @media (max-width: 820px){
   body{ padding: clamp(14px, 2.6vmin, 26px); }
 }
 
-/* Phones — switch cards to compact 2×2 */
 @media (max-width: 640px){
   body{ padding: clamp(12px, 3vmin, 20px); }
 
@@ -580,6 +731,7 @@ body.loaded .reveal{
   .links{
     grid-template-columns: 1fr 1fr;
     gap: clamp(9px, 2vmin, 14px);
+    perspective: 800px;
   }
 
   .card{
@@ -607,7 +759,6 @@ body.loaded .reveal{
   .welcome-name{ letter-spacing:.14em; }
 }
 
-/* Very short screens (landscape phones) — compress vertically */
 @media (max-height: 620px){
   .hero{ gap: 7px; }
   .name{ font-size: clamp(1.5rem, 6vmin, 2.4rem); }
@@ -618,13 +769,12 @@ body.loaded .reveal{
   .footer{ font-size:.52rem; padding-top:2px; }
 }
 
-/* Ultra-wide — keep content centered and readable */
 @media (min-width: 1400px){
   .hero{ max-width: 940px; }
 }
 
 /* ============================================================
-   12. ACCESSIBILITY
+   13. ACCESSIBILITY
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{
@@ -632,7 +782,7 @@ body.loaded .reveal{
     animation-iteration-count:1 !important;
     transition-duration:.001ms !important;
   }
-  .bg-layer, .bg-sheen{ animation:none !important; }
+  .bg-kb, .bg-sheen{ animation:none !important; }
 }
 
 .card:focus-visible{
@@ -641,7 +791,6 @@ body.loaded .reveal{
   border-color: rgba(255,255,255,.4);
 }
 
-/* iOS safe-area support */
 @supports (padding: max(0px)){
   body{
     padding-top:    max(clamp(16px, 3.2vmin, 42px), env(safe-area-inset-top));
@@ -656,11 +805,17 @@ body.loaded .reveal{
 <body>
 
 <!-- ============================================================
-     ANIMATED BACKGROUND LAYERS
+     ANIMATED BACKGROUND
      ============================================================ -->
-<div class="bg-layer" aria-hidden="true"></div>
+<div class="bg-layer" id="bgLayer" aria-hidden="true">
+  <div class="bg-kb"></div>
+</div>
 <div class="bg-overlay" aria-hidden="true"></div>
 <div class="bg-sheen" aria-hidden="true"></div>
+
+<!-- Cursor companion -->
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
 
 
 <!-- ============================================================
@@ -688,26 +843,21 @@ body.loaded .reveal{
      ============================================================ -->
 <main class="hero">
 
-  <div class="badge neu-inset reveal" style="--d:.10s">
+  <div class="badge neu-inset reveal" id="badge" style="--d:.10s">
     <span class="dot"></span> Available for work
   </div>
 
-  <h1 class="name reveal" style="--d:.22s">
-    Christopher <em>Eballe</em>
+  <h1 class="name reveal" id="heroName" style="--d:.22s">
+    Christopher <em>Eballo</em>
   </h1>
 
-  <p class="tagline reveal" style="--d:.34s">
-    Building clean, modern digital experiences.
-    Explore my <strong>portfolio</strong>, connect with me on social media,
-    or reach out directly — let's create something great together.
-  </p>
-
-  <nav class="links" aria-label="Social links">
+  <nav class="links" aria-label="Social links" id="linksGrid">
 
     <!-- PORTFOLIO -->
     <a class="card portfolio reveal" style="--d:.46s"
        href="https://eballodev.github.io/ChristopherEballoPortfolio/"
        target="_blank" rel="noopener">
+      <span class="spotlight" aria-hidden="true"></span>
       <span class="shine" aria-hidden="true"></span>
       <div class="card-icon">
         <svg viewBox="0 0 24 24">
@@ -729,6 +879,7 @@ body.loaded .reveal{
     <a class="card facebook reveal" style="--d:.56s"
        href="https://www.facebook.com/ichirozukiiii"
        target="_blank" rel="noopener">
+      <span class="spotlight" aria-hidden="true"></span>
       <span class="shine" aria-hidden="true"></span>
       <div class="card-icon">
         <svg viewBox="0 0 24 24">
@@ -748,6 +899,7 @@ body.loaded .reveal{
     <a class="card instagram reveal" style="--d:.66s"
        href="https://www.instagram.com/rikushiyoshio"
        target="_blank" rel="noopener">
+      <span class="spotlight" aria-hidden="true"></span>
       <span class="shine" aria-hidden="true"></span>
       <div class="card-icon">
         <svg viewBox="0 0 24 24">
@@ -765,9 +917,10 @@ body.loaded .reveal{
       </div>
     </a>
 
-    <!-- CONTACT NUMBER (SMART) -->
+    <!-- CONTACT -->
     <a class="card contact reveal" style="--d:.76s"
        href="tel:+639602558385">
+      <span class="spotlight" aria-hidden="true"></span>
       <span class="shine" aria-hidden="true"></span>
       <div class="card-icon">
         <svg viewBox="0 0 24 24">
@@ -786,7 +939,7 @@ body.loaded .reveal{
   </nav>
 
   <p class="footer reveal" style="--d:.88s">
-   <b>Professional Portfolio & Digital Services</b>
+    <b>Professional Portfolio &amp; Digital Services</b>
   </p>
 
 </main>
@@ -799,7 +952,13 @@ body.loaded .reveal{
 (function () {
   "use strict";
 
-  /* ---------- 1. Split the welcome name into animated letters ---------- */
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var isFinePointer = window.matchMedia("(pointer: fine)").matches;
+  var isTouch = window.matchMedia("(hover: none)").matches;
+
+  /* ============================================================
+     1. WELCOME LETTERS
+     ============================================================ */
   var NAME = "CHRISTOPHER EBALLO";
   var welcomeName = document.getElementById("welcomeName");
 
@@ -809,10 +968,12 @@ body.loaded .reveal{
     return '<span style="animation-delay:' + delay + 's">' + char + "</span>";
   }).join("");
 
-  /* ---------- 2. Preloader → page reveal timeline ---------- */
+  /* ============================================================
+     2. PRELOADER → REVEAL
+     ============================================================ */
   var preloader = document.getElementById("preloader");
-  var REVEAL_AT = 2400;   // when curtains start opening (ms)
-  var REMOVE_AT = 1150;   // curtain animation duration (ms)
+  var REVEAL_AT = 2400;
+  var REMOVE_AT = 1150;
 
   function startReveal() {
     if (!preloader || preloader.classList.contains("done")) return;
@@ -820,9 +981,7 @@ body.loaded .reveal{
     document.body.classList.add("loaded");
 
     setTimeout(function () {
-      if (preloader && preloader.parentNode) {
-        preloader.parentNode.removeChild(preloader);
-      }
+      if (preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
     }, REMOVE_AT + 150);
   }
 
@@ -834,60 +993,254 @@ body.loaded .reveal{
     });
   }
 
-  /* Safety net — never trap the visitor behind the preloader */
   setTimeout(function () {
     if (preloader && preloader.parentNode && !preloader.classList.contains("done")) {
       startReveal();
     }
   }, 7000);
 
-  /* ---------- 3. Footer year ---------- */
-  document.getElementById("year").textContent = new Date().getFullYear();
+  /* ============================================================
+     3. CURSOR GLOW + DOT
+     ============================================================ */
+  if (isFinePointer && !reduceMotion) {
+    var glow = document.getElementById("cursorGlow");
+    var dot  = document.getElementById("cursorDot");
 
-  /* ---------- 4. Subtle mouse parallax on the background ---------- */
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var bgLayer = document.querySelector(".bg-layer");
+    var mx = window.innerWidth / 2,
+        my = window.innerHeight / 2,
+        gx = mx, gy = my,
+        dx = mx, dy = my;
 
-  if (!reduceMotion && bgLayer && window.matchMedia("(pointer: fine)").matches) {
-    var tx = 0, ty = 0, cx = 0, cy = 0;
+    function onMove(e) {
+      mx = e.clientX;
+      my = e.clientY;
+      glow.classList.add("is-active");
+      dot.classList.add("is-active");
+    }
+    function onLeave() {
+      glow.classList.remove("is-active");
+      dot.classList.remove("is-active");
+    }
 
-    window.addEventListener("mousemove", function (e) {
-      tx = (e.clientX / window.innerWidth  - 0.5) * 22;
-      ty = (e.clientY / window.innerHeight - 0.5) * 22;
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseout", function (e) {
+      if (!e.relatedTarget) onLeave();
     });
 
-    (function loop() {
-      cx += (tx - cx) * 0.05;
-      cy += (ty - cy) * 0.05;
-      /* Layer on top of the existing Ken Burns animation via translate */
-      bgLayer.style.setProperty("--px", cx + "px");
-      bgLayer.style.setProperty("--py", cy + "px");
-      bgLayer.style.transform = "translate3d(" + cx + "px," + cy + "px,0) " +
-        getComputedStyle(bgLayer).getPropertyValue("--kb") ;
-      requestAnimationFrame(loop);
+    (function tick() {
+      /* Smooth, lagging glow */
+      gx += (mx - gx) * 0.12;
+      gy += (my - gy) * 0.12;
+      glow.style.transform = "translate(" + (gx - 260) + "px," + (gy - 260) + "px) scale(1)";
+
+      /* Snappier dot */
+      dx += (mx - dx) * 0.35;
+      dy += (my - dy) * 0.35;
+      dot.style.transform = "translate(" + (dx - 3) + "px," + (dy - 3) + "px)";
+
+      requestAnimationFrame(tick);
+    })();
+
+    /* Highlight dot on interactive elements */
+    document.querySelectorAll("a, button").forEach(function (el) {
+      el.addEventListener("mouseenter", function () {
+        dot.classList.add("is-hot");
+        glow.style.opacity = "1";
+      });
+      el.addEventListener("mouseleave", function () {
+        dot.classList.remove("is-hot");
+      });
+    });
+  }
+
+  /* ============================================================
+     4. CARD INTERACTIONS  (tilt + spotlight + ripple + icon pop)
+     ============================================================ */
+  var cards = document.querySelectorAll(".card");
+
+  cards.forEach(function (card) {
+    var rafId = null;
+    var pending = null;
+
+    /* ---- Tilt + spotlight tracking ---- */
+    function updateCard() {
+      rafId = null;
+      if (!pending) return;
+      var e = pending;
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+
+      /* Spotlight position via custom props */
+      card.style.setProperty("--mx", x + "px");
+      card.style.setProperty("--my", y + "px");
+
+      /* 3D tilt based on position within the card */
+      var cx = rect.width / 2;
+      var cy = rect.height / 2;
+      var tiltX = ((y - cy) / cy) * -8;    /* max ±8deg */
+      var tiltY = ((x - cx) / cx) * 8;
+      var maxTilt = isTouch ? 0 : 1;
+      card.style.setProperty("--rx", (tiltX * maxTilt).toFixed(2) + "deg");
+      card.style.setProperty("--ry", (tiltY * maxTilt).toFixed(2) + "deg");
+    }
+
+    function onMove(e) {
+      pending = e;
+      if (rafId == null) rafId = requestAnimationFrame(updateCard);
+    }
+
+    function onEnter() {
+      if (isTouch) return;
+      card.classList.add("is-hover", "is-tracking");
+    }
+
+    function onLeave() {
+      card.classList.remove("is-hover", "is-tracking");
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+      pending = null;
+    }
+
+    if (!isTouch && !reduceMotion) {
+      card.addEventListener("mouseenter", onEnter);
+      card.addEventListener("mousemove", onMove, { passive: true });
+      card.addEventListener("mouseleave", onLeave);
+    }
+
+    /* ---- Click ripple + icon pop ---- */
+    card.addEventListener("pointerdown", function (e) {
+      var rect = card.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height) * 1.2;
+      var x = e.clientX - rect.left - size / 2;
+      var y = e.clientY - rect.top  - size / 2;
+
+      var ripple = document.createElement("span");
+      ripple.className = "ripple";
+      ripple.style.width  = size + "px";
+      ripple.style.height = size + "px";
+      ripple.style.left   = x + "px";
+      ripple.style.top    = y + "px";
+      card.appendChild(ripple);
+
+      card.classList.add("is-clicking");
+      setTimeout(function () { card.classList.remove("is-clicking"); }, 600);
+      setTimeout(function () {
+        if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+      }, 800);
+    });
+
+    /* ---- Keyboard activation for accessibility ---- */
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        var rect = card.getBoundingClientRect();
+        var size = Math.max(rect.width, rect.height) * 1.2;
+        var ripple = document.createElement("span");
+        ripple.className = "ripple";
+        ripple.style.width  = size + "px";
+        ripple.style.height = size + "px";
+        ripple.style.left   = (rect.width  / 2 - size / 2) + "px";
+        ripple.style.top    = (rect.height / 2 - size / 2) + "px";
+        card.appendChild(ripple);
+        setTimeout(function () {
+          if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+        }, 800);
+      }
+    });
+  });
+
+  /* ============================================================
+     5. MAGNETIC BADGE
+     ============================================================ */
+  var badge = document.getElementById("badge");
+  if (badge && isFinePointer && !reduceMotion) {
+    var bx = 0, by = 0;
+
+    badge.addEventListener("mousemove", function (e) {
+      var rect = badge.getBoundingClientRect();
+      var relX = e.clientX - (rect.left + rect.width  / 2);
+      var relY = e.clientY - (rect.top  + rect.height / 2);
+      bx = relX * 0.22;
+      by = relY * 0.30;
+      badge.style.setProperty("--mag-x", bx.toFixed(2) + "px");
+      badge.style.setProperty("--mag-y", by.toFixed(2) + "px");
+    });
+
+    badge.addEventListener("mouseleave", function () {
+      badge.style.setProperty("--mag-x", "0px");
+      badge.style.setProperty("--mag-y", "0px");
+    });
+  }
+
+  /* ============================================================
+     6. NAME MICRO-PARALLAX
+     ============================================================ */
+  var heroName = document.getElementById("heroName");
+  if (heroName && isFinePointer && !reduceMotion) {
+    var ntx = 0, nty = 0, ncx = 0, ncy = 0;
+
+    window.addEventListener("mousemove", function (e) {
+      ntx = (e.clientX / window.innerWidth  - 0.5) * 10;
+      nty = (e.clientY / window.innerHeight - 0.5) * 6;
+    });
+
+    (function nameLoop() {
+      ncx += (ntx - ncx) * 0.06;
+      ncy += (nty - ncy) * 0.06;
+      heroName.style.transform =
+        "translate3d(" + ncx.toFixed(2) + "px," + ncy.toFixed(2) + "px,0)";
+      requestAnimationFrame(nameLoop);
     })();
   }
 
-  /* ---------- 5. Prevent pinch-zoom / double-tap zoom on mobile ---------- */
-  document.addEventListener("gesturestart", function (e) { e.preventDefault(); }, { passive:false });
+  /* ============================================================
+     7. BACKGROUND PARALLAX
+     ============================================================ */
+  var bgLayer = document.getElementById("bgLayer");
+  if (bgLayer && isFinePointer && !reduceMotion) {
+    var ptx = 0, pty = 0, pcx = 0, pcy = 0;
+
+    window.addEventListener("mousemove", function (e) {
+      ptx = (e.clientX / window.innerWidth  - 0.5) * -30;
+      pty = (e.clientY / window.innerHeight - 0.5) * -30;
+    });
+
+    (function bgLoop() {
+      pcx += (ptx - pcx) * 0.05;
+      pcy += (pty - pcy) * 0.05;
+      bgLayer.style.transform =
+        "translate3d(" + pcx.toFixed(2) + "px," + pcy.toFixed(2) + "px,0)";
+      requestAnimationFrame(bgLoop);
+    })();
+  }
+
+  /* ============================================================
+     8. TOUCH: STICKY-HOVER PREVENTION
+     ============================================================ */
+  if (isTouch) {
+    cards.forEach(function (card) {
+      card.addEventListener("touchstart", function () {
+        cards.forEach(function (c) { c.classList.remove("is-hover"); });
+        card.classList.add("is-hover");
+      }, { passive: true });
+      card.addEventListener("touchend", function () {
+        setTimeout(function () { card.classList.remove("is-hover"); }, 260);
+      }, { passive: true });
+    });
+  }
+
+  /* ============================================================
+     9. PREVENT PINCH / DOUBLE-TAP ZOOM
+     ============================================================ */
+  document.addEventListener("gesturestart", function (e) { e.preventDefault(); }, { passive: false });
 
   var lastTouch = 0;
   document.addEventListener("touchend", function (e) {
     var now = Date.now();
     if (now - lastTouch <= 300) e.preventDefault();
     lastTouch = now;
-  }, { passive:false });
+  }, { passive: false });
 
-  /* ---------- 6. Prevent hover "stuck" state on touch devices ---------- */
-  if (window.matchMedia("(hover: none)").matches) {
-    var cards = document.querySelectorAll(".card");
-    cards.forEach(function (card) {
-      card.addEventListener("touchstart", function () {
-        cards.forEach(function (c) { c.classList.remove("is-hover"); });
-        card.classList.add("is-hover");
-      }, { passive:true });
-    });
-  }
 })();
 </script>
 
